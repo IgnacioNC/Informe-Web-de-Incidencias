@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block titulo %}Informe de incidencias{% endblock %}
+
+{% block contenido %}
+
+<h2>Filtros</h2>
+<div class="filtros">
+  <form method="get" action="/informe">
+    <label>
+      Categoría:
+      <select name="categoria">
+        <option value="" {% if not categoria %}selected{% endif %}>(Todas)</option>
+        <option value="red" {% if categoria == "red" %}selected{% endif %}>Red</option>
+        <option value="hardware" {% if categoria == "hardware" %}selected{% endif %}>Hardware</option>
+        <option value="software" {% if categoria == "software" %}selected{% endif %}>Software</option>
+      </select>
+    </label>
+
+    <label>
+      Mínimo de gravedad:
+      <input type="number" name="min_gravedad" min="1" max="5" value="{{ min_gravedad }}" />
+    </label>
+
+    <label>
+      Estado:
+      <select name="estado">
+        <option value="" {% if not estado %}selected{% endif %}>(Todos)</option>
+        <option value="pendiente" {% if estado == "pendiente" %}selected{% endif %}>Pendiente</option>
+        <option value="en_curso" {% if estado == "en_curso" %}selected{% endif %}>En curso</option>
+        <option value="completada" {% if estado == "completada" %}selected{% endif %}>Completada</option>
+      </select>
+    </label>
+
+    <button type="submit">Aplicar filtros</button>
+  </form>
+</div>
+
+<h2>Resumen</h2>
+<ul>
+  <li>Nº de incidencias: {{ resumen.num_incidencias }}</li>
+  <li>Nº de resueltas: {{ resumen.num_resueltas }}</li>
+  <li>% de resueltas: {{ resumen.porcentaje_resueltas }} %</li>
+</ul>
+
+<h2>Detalle de las incidencias</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Categoría</th>
+      <th>Estado</th>
+      <th>Nivel Gravedad</th>
+      <th>Comentario</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for incidencia in incidencias %}
+    <tr>
+      <td>{{ incidencia.id if incidencia.id is defined else incidencia["id"] }}</td>
+      <td>{{ incidencia.categoria if incidencia.categoria is defined else incidencia["categoria"] }}</td>
+      <td>{{ incidencia.estado if incidencia.estado is defined else incidencia["estado"] }}</td>
+      <td>{{ incidencia.gravedad if incidencia.gravedad is defined else incidencia["gravedad"] }}</td>
+      <td>{{ incidencia.comentario if incidencia.comentario is defined else incidencia["comentario"] }}</td>
+    </tr>
+    {% endfor %}
+    {% if incidencias|length == 0 %}
+    <tr>
+      <td colspan="5">No hay incidencias que cumplan los filtros.</td>
+    </tr>
+    {% endif %}
+  </tbody>
+</table>
+
+<div class="graficos">
+  <div class="grafico-col">
+    <h2>Grafico: numero de incidencias por categoría</h2>
+    <canvas id="grafico"></canvas>
+  </div>
+
+  <div class="grafico-col">
+    <h2>Gráfico circular: incidencias por estado</h2>
+    <canvas id="graficoEstado"></canvas>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const labels = {{ labels | tojson }};
+  const values = {{ values | tojson }};
+
+  const ctx = document.getElementById("grafico").getContext("2d");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Numero de incidencias",
+        data: values,
+      }],
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  // Serializa incidencias a JSON para usar en JavaScript y lo escapa para <script>
+  const incidencias = {{ incidencias | tojson }};
+  const conteoEstado = { pendiente: 0, en_curso: 0, completada: 0 };
+
+  incidencias.forEach(i => {
+    if (conteoEstado[i.estado] !== undefined) conteoEstado[i.estado]++;
+  });
+
+  const labelsEstado = ["pendiente", "en_curso", "completada"];
+  const valuesEstado = labelsEstado.map(e => conteoEstado[e]);
+
+  const ctxPie = document.getElementById("graficoEstado").getContext("2d");
+  new Chart(ctxPie, {
+    type: "pie",
+    data: {
+      labels: labelsEstado,
+      datasets: [{ label: "Incidencias por estado", data: valuesEstado }],
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+</script>
+
+{% endblock %}
