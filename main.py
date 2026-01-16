@@ -34,7 +34,7 @@ async def index(request: Request):
 async def informe(
     request: Request,   
     categoria: Optional[str] = Query(None, description="Filtrar por categoria"),  #query params
-    min_gravedad: int = Query(0, ge=1, le=5, description="Gravedad minima"),
+    min_gravedad: int = Query(1, ge=1, le=5, description="Gravedad minima"),
     estado: Optional[str] = Query(None, description="Filtrar por estado"),
 ):
     
