@@ -56,14 +56,14 @@ Los filtros se aplican mediante parámetros en la URL.
 └── README.md
 ```
 
-## ▶️ Ejecución
+## ▶️ Ejecución con Docker
 
-Ejecutar el servidor de desarrollo:
+Levantar la aplicación usando Docker Compose:
 
 ```bash
-uvicorn main:app --reload
+docker-compose up --build
 ```
 
 Acceder al informe desde el navegador:
 
-http://127.0.0.1:8000/informe
+- http://127.0.0.1:8000/informe
