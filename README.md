@@ -46,13 +46,15 @@ Los filtros se aplican mediante parámetros en la URL.
 
 ## 🗂️ Estructura del proyecto
 
+```text
 .
 ├── main.py
 ├── templates/
-│ ├── base.html
-│ └── informe.html
+│   ├── base.html
+│   └── informe.html
 ├── capturas/
-├── README.md
+└── README.md
+```
 
 ## ▶️ Ejecución
 
