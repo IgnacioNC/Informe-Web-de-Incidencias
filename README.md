@@ -51,13 +51,17 @@ Los filtros se aplican mediante parámetros en la URL.
 ├── templates/
 │ ├── base.html
 │ └── informe.html
+├── capturas/
 ├── README.md
-└── capturas/
 
 ## ▶️ Ejecución
 
+Ejecutar el servidor de desarrollo:
+
 ```bash
 uvicorn main:app --reload
+```
+
+Acceder al informe desde el navegador:
 
 http://127.0.0.1:8000/informe
-```
