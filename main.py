@@ -11,11 +11,11 @@ BASE_DIR = Path(__file__).resolve().parent
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 INCIDENCIAS = [
-    {"id": 1, "categoria": "Red", "estado": "Pendiente", "gravedad": 3, "comentario": "Problemas de conectividad"},
-    {"id": 2, "categoria": "Hardware", "estado": "En curso", "gravedad": 5, "comentario": "Fallo en servidor"},
+    {"id": 1, "categoria": "Red", "estado": "pendiente", "gravedad": 3, "comentario": "Problemas de conectividad"},
+    {"id": 2, "categoria": "Hardware", "estado": "en_curso", "gravedad": 5, "comentario": "Fallo en servidor"},
     {"id": 3, "categoria": "Software", "estado": "Pendiente", "gravedad": 2, "comentario": "Error en aplicación"},
-    {"id": 4, "categoria": "Software", "estado": "Completada", "gravedad": 4, "comentario": "Actualización de drivers"},
-    {"id": 5, "categoria": "Hardware", "estado": "Completada", "gravedad": 5, "comentario": "Reemplazo de disco duro"},
+    {"id": 4, "categoria": "Software", "estado": "completada", "gravedad": 4, "comentario": "Actualización de drivers"},
+    {"id": 5, "categoria": "Hardware", "estado": "completada", "gravedad": 5, "comentario": "Reemplazo de disco duro"},
 ]
 
 # Al entrar en la raiz ("/") carga base.html
@@ -56,7 +56,7 @@ async def informe(
         incidencias_filtradas.append(incidencia)
 
     total_incidencias = len(incidencias_filtradas)
-    resueltas = sum(1 for incidencia in incidencias_filtradas if incidencia["estado"] == "completada")
+    resueltas = sum(1 for incidencia in incidencias_filtradas if incidencia["estado"] == "Completada")
     porcentaje_resueltas = (resueltas / total_incidencias * 100) if total_incidencias > 0 else 0
 
     # Variables que se usan en informe
@@ -66,7 +66,7 @@ async def informe(
         "porcentaje_resueltas": round(porcentaje_resueltas, 2),
     }
 
-    categorias_posibles = ["red", "hardware", "software"]
+    categorias_posibles = ["Red", "Hardware", "Software"]
     labels = categorias_posibles
     values = [
         # Cuenta las incidencias por categoria
